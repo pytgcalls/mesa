@@ -1,0 +1,72 @@
+name: build
+on:
+  push:
+    paths-ignore:
+      - "**.md"
+      - "LICENSE"
+      - "NOTICE"
+      - ".gitignore"
+      - "libraries.properties"
+      - "build.sh"
+    tags:
+      - "*"
+
+jobs:
+  build-linux:
+    runs-on: ${{ matrix.platform.host }}
+    strategy:
+      fail-fast: false
+      matrix:
+        platform:
+          - name: linux-x86_64
+            arch_image: x86_64
+            host: ubuntu-latest
+          - name: linux-arm64
+            arch_image: arm64
+            host: arm64-server
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up QEMU
+        if: matrix.platform.name == 'linux-arm64'
+        uses: docker/setup-qemu-action@v3
+        with:
+          platforms: arm64
+
+      - name: Build Mesa Libraries with Docker
+        run: |
+          docker run -v $(pwd):/app -w /app ghcr.io/pytgcalls/ntgcalls/${{ matrix.platform.arch_image }}:latest bash build.sh
+
+      - name: Prepare for artifact
+        run: tar -czvf mesa.${{ matrix.platform.name }}.tar.gz artifacts
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: mesa.${{ matrix.platform.name }}.tar.gz
+          path: mesa.${{ matrix.platform.name }}.tar.gz
+
+  create-release:
+    name: Create Release
+    if: contains(github.ref, 'tags/v')
+    needs: build-linux
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/download
+        with:
+          platform: linux-x86_64
+      - uses: ./.github/actions/download
+        with:
+          platform: linux-arm64
+      - name: Env to output
+        run: |
+          echo "package_paths<<EOF" >> $GITHUB_OUTPUT
+          cat package_paths.env >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+        id: env
+      - name: Release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: ${{ steps.env.outputs.package_paths }}
