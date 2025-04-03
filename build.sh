@@ -8,6 +8,7 @@ UTIL_MACROS_VERSION=$(get_version "util-macros")
 XSHMFENCE_VERSION=$(get_version "xshmfence")
 XRANDR_VERSION=$(get_version "xrandr")
 XFIXES_VERSION=$(get_version "Xfixes")
+XXF86VM_VERSION=$(get_version "Xxf86vm")
 FFI_VERSION=$(get_version "ffi")
 XML2_VERSION=$(get_version "xml2")
 WAYLAND_VERSION=$(get_version "wayland")
@@ -29,6 +30,7 @@ build_and_install "${FREEDESKTOP_GIT}xorg/lib/libxshmfence.git" "libxshmfence-$X
 build_and_install "${FREEDESKTOP_GIT}xorg/lib/libxrandr.git" "libXrandr-$XRANDR_VERSION" autogen
 build_and_install "${FREEDESKTOP_GIT}xorg/proto/xorgproto.git" "xorgproto-$XORGPROTO_VERSION" autogen
 build_and_install "${FREEDESKTOP_GIT}xorg/lib/libXfixes.git" "libXfixes-$XFIXES_VERSION" autogen
+build_and_install "${FREEDESKTOP_GIT}xorg/lib/libxxf86vm.git" "libXxf86vm-$XXF86VM_VERSION" autogen
 build_and_install https://github.com/libffi/libffi.git "v$FFI_VERSION" configure
 build_and_install https://gitlab.gnome.org/GNOME/libxml2.git "v$XML2_VERSION" autogen PYTHON_CFLAGS="$(/opt/python/cp312-cp312/bin/python3-config --cflags)" PYTHON_LIBS="$(/opt/python/cp312-cp312/bin/python3-config --libs)"
 build_and_install "${FREEDESKTOP_GIT}wayland/wayland.git" "$WAYLAND_VERSION" meson -Ddocumentation=false
