@@ -37,7 +37,7 @@ build_and_install "${FREEDESKTOP_GIT}vdpau/libvdpau.git" "$VDPAU_VERSION" meson
 build_and_install "https://github.com/intel/libva.git" "$LIBVA_VERSION" meson
 build_and_install "${FREEDESKTOP_GIT}xorg/lib/libpciaccess.git" "libpciaccess-$PCI_ACCESS" meson
 build_and_install "${FREEDESKTOP_GIT}mesa/drm.git" "libdrm-$DRM_VERSION" meson -Dintel=enabled
-build_and_install "${FREEDESKTOP_GIT}mesa/mesa.git" "mesa-$MESA_VERSION" meson-static --prefix="$(pwd)/mesa/build/" --pre-autogen-command="find src -type f -name 'meson.build' ! -path 'src/nouveau/*' -exec sed -i 's/shared_library/library/g' {} +"
+build_and_install "${FREEDESKTOP_GIT}mesa/mesa.git" "mesa-$MESA_VERSION" meson-static --prefix="$(pwd)/mesa/build/" --setup-commands="find src -type f -name 'meson.build' ! -path 'src/nouveau/*' -exec sed -i 's/shared_library/library/g' {} +"
 build_and_install "${FREEDESKTOP_GIT}mesa/drm.git" "libdrm-$DRM_VERSION" meson-static -Dintel=enabled --prefix="$(pwd)/drm/build/"
 
 mkdir -p artifacts/lib
