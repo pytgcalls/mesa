@@ -15,7 +15,6 @@ jobs:
   build-linux:
     runs-on: ${{ matrix.platform.host }}
     strategy:
-      fail-fast: false
       matrix:
         platform:
           - name: linux-x86_64
