@@ -26,7 +26,7 @@ build_and_install "${FREEDESKTOP_GIT}xorg/util/macros.git" "util-macros-$UTIL_MA
 build_and_install "${FREEDESKTOP_GIT}xorg/lib/libxshmfence.git" "libxshmfence-$XSHMFENCE_VERSION" autogen
 build_and_install "${FREEDESKTOP_GIT}xorg/lib/libxrandr.git" "libXrandr-$XRANDR_VERSION" autogen
 build_and_install https://github.com/libffi/libffi.git "v$FFI_VERSION" configure
-build_and_install https://github.com/GNOME/libxml2.git "v$XML2_VERSION" autogen PYTHON_CFLAGS="$(/opt/python/cp312-cp312/bin/python3-config --cflags)" PYTHON_LIBS="$(/opt/python/cp312-cp312/bin/python3-config --libs)"
+build_and_install https://gitlab.gnome.org/GNOME/libxml2.git "v$XML2_VERSION" autogen PYTHON_CFLAGS="$(/opt/python/cp312-cp312/bin/python3-config --cflags)" PYTHON_LIBS="$(/opt/python/cp312-cp312/bin/python3-config --libs)"
 build_and_install "${FREEDESKTOP_GIT}wayland/wayland.git" "$WAYLAND_VERSION" meson -Ddocumentation=false
 build_and_install "https://github.com/KhronosGroup/SPIRV-Headers.git" "vulkan-sdk-$SPIRV_TOOLS_VERSION" cmake --skip-build
 build_and_install "https://github.com/KhronosGroup/SPIRV-Tools.git" "vulkan-sdk-$SPIRV_TOOLS_VERSION" cmake --update-submodules -DSPIRV-Headers_SOURCE_DIR="$(pwd)/SPIRV-Headers"
