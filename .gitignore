@@ -6,6 +6,7 @@ libglvnd
 libpciaccess
 libva
 libvdpau
+libXfixes
 libxml2
 libxrandr
 libxshmfence
@@ -15,4 +16,5 @@ SPIRV-Headers
 SPIRV-LLVM-Translator
 SPIRV-Tools
 wayland
+xorgproto
 venv

@@ -7,6 +7,7 @@ require_venv
 UTIL_MACROS_VERSION=$(get_version "util-macros")
 XSHMFENCE_VERSION=$(get_version "xshmfence")
 XRANDR_VERSION=$(get_version "xrandr")
+XFIXES_VERSION=$(get_version "Xfixes")
 FFI_VERSION=$(get_version "ffi")
 XML2_VERSION=$(get_version "xml2")
 WAYLAND_VERSION=$(get_version "wayland")
@@ -19,12 +20,15 @@ LIBVA_VERSION=$(get_version "libva")
 PCI_ACCESS=$(get_version "pciaccess")
 DRM_VERSION=$(get_version "drm")
 MESA_VERSION=$(get_version "mesa")
+XORGPROTO_VERSION=$(get_version "xorgproto")
 
 run cargo install bindgen-cli cbindgen
 python -m pip install packaging pyyaml pycparser mako --root-user-action=ignore
 build_and_install "${FREEDESKTOP_GIT}xorg/util/macros.git" "util-macros-$UTIL_MACROS_VERSION" autogen
 build_and_install "${FREEDESKTOP_GIT}xorg/lib/libxshmfence.git" "libxshmfence-$XSHMFENCE_VERSION" autogen
 build_and_install "${FREEDESKTOP_GIT}xorg/lib/libxrandr.git" "libXrandr-$XRANDR_VERSION" autogen
+build_and_install "${FREEDESKTOP_GIT}xorg/proto/xorgproto.git" "xorgproto-$XORGPROTO_VERSION" autogen
+build_and_install "${FREEDESKTOP_GIT}xorg/lib/libXfixes.git" "libXfixes-$XFIXES_VERSION" autogen
 build_and_install https://github.com/libffi/libffi.git "v$FFI_VERSION" configure
 build_and_install https://gitlab.gnome.org/GNOME/libxml2.git "v$XML2_VERSION" autogen PYTHON_CFLAGS="$(/opt/python/cp312-cp312/bin/python3-config --cflags)" PYTHON_LIBS="$(/opt/python/cp312-cp312/bin/python3-config --libs)"
 build_and_install "${FREEDESKTOP_GIT}wayland/wayland.git" "$WAYLAND_VERSION" meson -Ddocumentation=false
