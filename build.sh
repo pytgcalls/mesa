@@ -1,55 +1,44 @@
-# shellcheck disable=SC1090
-source <(curl -s https://raw.githubusercontent.com/pytgcalls/build-toolkit/refs/heads/master/build-toolkit.sh)
+source /dev/stdin <<< "$(curl -s https://raw.githubusercontent.com/pytgcalls/build-toolkit/refs/heads/master/build-toolkit.sh)"
 
-require_rust
-require_venv
+require rust
+require venv
 
-UTIL_MACROS_VERSION=$(get_version "util-macros")
-XSHMFENCE_VERSION=$(get_version "xshmfence")
-XRANDR_VERSION=$(get_version "xrandr")
-XFIXES_VERSION=$(get_version "Xfixes")
-XXF86VM_VERSION=$(get_version "Xxf86vm")
-FFI_VERSION=$(get_version "ffi")
-XML2_VERSION=$(get_version "xml2")
-WAYLAND_VERSION=$(get_version "wayland")
-SPIRV_TOOLS_VERSION=$(get_version "spirv-tools")
-SPIRV_LLVM_VERSION=$(get_version "spirv-llvm")
-GLSLANG_VERSION=$(get_version "glslang")
-GLVND_VERSION=$(get_version "glvnd")
-VDPAU_VERSION=$(get_version "vdpau")
-LIBVA_VERSION=$(get_version "libva")
-PCI_ACCESS=$(get_version "pciaccess")
-DRM_VERSION=$(get_version "drm")
-MESA_VERSION=$(get_version "mesa")
-XORGPROTO_VERSION=$(get_version "xorgproto")
+import .env
+import libraries.properties
+import libraries.properties from "github.com/pytgcalls/libx11"
+import mako from python3
+import meson from python3
+import ninja from python3
+import pyyaml from python3
+import packaging from python3
+import pycparser from python3
+import cbindgen from rust
+import bindgen-cli from rust
 
-run cargo install bindgen-cli cbindgen
-python -m pip install packaging pyyaml pycparser mako --root-user-action=ignore
-build_and_install "${FREEDESKTOP_GIT}xorg/util/macros.git" "util-macros-$UTIL_MACROS_VERSION" autogen
-build_and_install "${FREEDESKTOP_GIT}xorg/lib/libxshmfence.git" "libxshmfence-$XSHMFENCE_VERSION" autogen
-build_and_install "${FREEDESKTOP_GIT}xorg/lib/libxrandr.git" "libXrandr-$XRANDR_VERSION" autogen
-build_and_install "${FREEDESKTOP_GIT}xorg/proto/xorgproto.git" "xorgproto-$XORGPROTO_VERSION" autogen
-build_and_install "${FREEDESKTOP_GIT}xorg/lib/libXfixes.git" "libXfixes-$XFIXES_VERSION" autogen
-build_and_install "${FREEDESKTOP_GIT}xorg/lib/libxxf86vm.git" "libXxf86vm-$XXF86VM_VERSION" autogen
-build_and_install https://github.com/libffi/libffi.git "v$FFI_VERSION" configure
-build_and_install https://gitlab.gnome.org/GNOME/libxml2.git "v$XML2_VERSION" autogen PYTHON_CFLAGS="$(/opt/python/cp312-cp312/bin/python3-config --cflags)" PYTHON_LIBS="$(/opt/python/cp312-cp312/bin/python3-config --libs)"
-build_and_install "${FREEDESKTOP_GIT}wayland/wayland.git" "$WAYLAND_VERSION" meson -Ddocumentation=false
-build_and_install "https://github.com/KhronosGroup/SPIRV-Headers.git" "vulkan-sdk-$SPIRV_TOOLS_VERSION" cmake --skip-build
-build_and_install "https://github.com/KhronosGroup/SPIRV-Tools.git" "vulkan-sdk-$SPIRV_TOOLS_VERSION" cmake --update-submodules -DSPIRV-Headers_SOURCE_DIR="$(pwd)/SPIRV-Headers"
-build_and_install "https://github.com/KhronosGroup/SPIRV-LLVM-Translator.git" "v$SPIRV_LLVM_VERSION" cmake
-build_and_install "https://github.com/KhronosGroup/glslang.git" "$GLSLANG_VERSION" cmake -DALLOW_EXTERNAL_SPIRV_TOOLS=ON
-build_and_install "${FREEDESKTOP_GIT}glvnd/libglvnd.git" "v$GLVND_VERSION" meson
-build_and_install "${FREEDESKTOP_GIT}vdpau/libvdpau.git" "$VDPAU_VERSION" meson
-build_and_install "https://github.com/intel/libva.git" "$LIBVA_VERSION" meson
-build_and_install "${FREEDESKTOP_GIT}xorg/lib/libpciaccess.git" "libpciaccess-$PCI_ACCESS" meson
-build_and_install "${FREEDESKTOP_GIT}mesa/drm.git" "libdrm-$DRM_VERSION" meson -Dintel=enabled
-build_and_install "${FREEDESKTOP_GIT}mesa/mesa.git" "mesa-$MESA_VERSION" meson-static --prefix="$(pwd)/mesa/build/" --setup-commands="find src -type f -name 'meson.build' ! -path 'src/nouveau/*' -exec sed -i 's/shared_library/library/g' {} +"
-build_and_install "${FREEDESKTOP_GIT}mesa/drm.git" "libdrm-$DRM_VERSION" meson-static -Dintel=enabled --prefix="$(pwd)/drm/build/"
+build_and_install "macros" configure
+build_and_install "libXshmfence" configure
+build_and_install "libXrandr" configure
+build_and_install "xorgproto" configure
+build_and_install "libXfixes" configure
+build_and_install "libXxf86vm" configure
+build_and_install "libffi" configure
+build_and_install "libxml2" autogen \
+  PYTHON_CFLAGS="$(/opt/python/cp312-cp312/bin/python3-config --cflags)" \
+  PYTHON_LIBS="$(/opt/python/cp312-cp312/bin/python3-config --libs)"
+build_and_install "SPIRV-Headers" cmake --skip-build
+build_and_install "wayland" meson-static -Ddocumentation=false
+build_and_install "SPIRV-Tools" cmake --update-submodules \
+  -DSPIRV-Headers_SOURCE_DIR="$DEFAULT_BUILD_FOLDER/SPIRV-Headers"
+build_and_install "SPIRV-LLVM-Translator" cmake
+build_and_install "glslang" cmake -DALLOW_EXTERNAL_SPIRV_TOOLS=ON
+build_and_install "libglvnd" meson
+build_and_install "libvdpau" meson
+build_and_install "libva" meson
+build_and_install "libpciaccess" meson
 
-mkdir -p artifacts/lib
-mkdir -p artifacts/include
+build_and_install "drm" meson-static -Dintel=enabled
+build_and_install "mesa" meson-static \
+  --setup-commands="find src -type f -name 'meson.build' ! -path 'src/nouveau/*' -exec sed -i 's/shared_library/library/g' {} +"
 
-cp mesa/build/lib/libgbm.a artifacts/lib/
-cp mesa/build/include/gbm.h artifacts/include/
-cp drm/build/lib/libdrm.a artifacts/lib/
-cp -r drm/build/include/libdrm artifacts/include/
+copy_libs "drm" "artifacts"
+copy_libs "mesa" "artifacts" "gbm"
