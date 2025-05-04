@@ -3,7 +3,6 @@ source /dev/stdin <<< "$(curl -s https://raw.githubusercontent.com/pytgcalls/bui
 require rust
 require venv
 
-import .env
 import libraries.properties
 import libraries.properties from "github.com/pytgcalls/libx11"
 import mako from python3
