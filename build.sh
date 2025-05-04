@@ -3,6 +3,7 @@ source /dev/stdin <<< "$(curl -s https://raw.githubusercontent.com/pytgcalls/bui
 require rust
 require venv
 
+import patch-mesa.sh
 import libraries.properties
 import libraries.properties from "github.com/pytgcalls/libx11"
 import mako from python3
@@ -36,8 +37,7 @@ build_and_install "libva" meson
 build_and_install "libpciaccess" meson
 
 build_and_install "drm" meson-static -Dintel=enabled
-build_and_install "mesa" meson-static \
-  --setup-commands="find src -type f -name 'meson.build' ! -path 'src/nouveau/*' -exec sed -i 's/shared_library/library/g' {} +"
+build_and_install "mesa" meson-static --setup-commands="patch_mesa"
 
 copy_libs "drm" "artifacts"
 copy_libs "mesa" "artifacts" "gbm"
