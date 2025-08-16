@@ -25,6 +25,8 @@ build_and_install "libffi" configure
 build_and_install "libxml2" autogen \
   PYTHON_CFLAGS="$(/opt/python/cp312-cp312/bin/python3-config --cflags)" \
   PYTHON_LIBS="$(/opt/python/cp312-cp312/bin/python3-config --libs)"
+build_and_install "libXtrans" configure
+build_and_install "libX11" configure
 build_and_install "SPIRV-Headers" cmake --skip-build
 build_and_install "wayland" meson-static -Ddocumentation=false
 build_and_install "SPIRV-Tools" cmake --update-submodules \
