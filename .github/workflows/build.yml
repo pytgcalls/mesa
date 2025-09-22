@@ -19,10 +19,16 @@ jobs:
         platform:
           - name: linux-x86_64
             arch_image: x86_64
+            gcc_suffix: manylinux
             host: ubuntu-latest
           - name: linux-arm64
             arch_image: arm64
+            gcc_suffix: manylinux
             host: arm64-server
+          - name: muslinux-x86_64
+            arch_image: x86_64
+            gcc_suffix: muslinux
+            host: ubuntu-latest
     steps:
       - name: Check out repository
         uses: actions/checkout@v4
@@ -35,7 +41,7 @@ jobs:
 
       - name: Build Mesa Libraries with Docker
         run: |
-          docker run -v $(pwd):/app -w /app ghcr.io/pytgcalls/ntgcalls/${{ matrix.platform.arch_image }}:latest bash build.sh
+          docker run -v $(pwd):/app -w /app ghcr.io/pytgcalls/ntgcalls/${{ matrix.platform.gcc_suffix }}-${{ matrix.platform.arch_image }}:latest bash build.sh
 
       - name: Prepare for artifact
         run: tar -czvf mesa.${{ matrix.platform.name }}.tar.gz artifacts
@@ -59,6 +65,9 @@ jobs:
       - uses: ./.github/actions/download
         with:
           platform: linux-arm64
+      - uses: ./.github/actions/download
+        with:
+          platform: muslinux-x86_64
       - name: Env to output
         run: |
           echo "package_paths<<EOF" >> $GITHUB_OUTPUT
