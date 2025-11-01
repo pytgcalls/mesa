@@ -23,8 +23,8 @@ build_and_install "libXfixes" configure
 build_and_install "libXxf86vm" configure
 build_and_install "libffi" configure
 build_and_install "libxml2" autogen \
-  PYTHON_CFLAGS="$(/opt/python/cp312-cp312/bin/python3-config --cflags)" \
-  PYTHON_LIBS="$(/opt/python/cp312-cp312/bin/python3-config --libs)"
+  PYTHON_CFLAGS="$(/opt/python/cp314-cp314/bin/python3-config --cflags)" \
+  PYTHON_LIBS="$(/opt/python/cp314-cp314/bin/python3-config --libs)"
 build_and_install "libXtrans" configure
 build_and_install "libX11" configure
 build_and_install "SPIRV-Headers" cmake --skip-build
