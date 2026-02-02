@@ -41,7 +41,8 @@ jobs:
 
       - name: Build Mesa Libraries with Docker
         run: |
-          docker run --rm -v $(pwd):/app -w /app ghcr.io/pytgcalls/ntgcalls/${{ matrix.platform.gcc_suffix }}-${{ matrix.platform.arch_image }}:latest bash build.sh
+          docker run --rm -v $(pwd):/app -w /app --env GITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }} \
+              ghcr.io/pytgcalls/ntgcalls/${{ matrix.platform.gcc_suffix }}-${{ matrix.platform.arch_image }}:latest bash build.sh
 
       - name: Prepare for artifact
         run: tar -czvf mesa.${{ matrix.platform.name }}.tar.gz artifacts
