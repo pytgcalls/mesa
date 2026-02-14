@@ -25,10 +25,10 @@ jobs:
             arch_image: arm64
             gcc_suffix: manylinux
             host: arm64-server
-          #- name: muslinux-x86_64
-          #  arch_image: x86_64
-          #  gcc_suffix: muslinux
-          #  host: ubuntu-latest
+          - name: muslinux-x86_64
+            arch_image: x86_64
+            gcc_suffix: muslinux
+            host: ubuntu-latest
     steps:
       - name: Check out repository
         uses: actions/checkout@v6
