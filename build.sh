@@ -3,6 +3,10 @@ source /dev/stdin <<< "$(curl -s https://raw.githubusercontent.com/pytgcalls/bui
 require rust
 require venv
 
+if is_musl; then
+  export RUSTFLAGS="-C target-feature=-crt-static"
+fi
+
 import patch-mesa.sh
 import libraries.properties
 import libraries.properties from "github.com/pytgcalls/libx11"
