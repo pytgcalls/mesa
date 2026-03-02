@@ -48,7 +48,7 @@ jobs:
         run: tar -czvf mesa.${{ matrix.platform.name }}.tar.gz artifacts
 
       - name: Upload artifact
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         with:
           name: mesa.${{ matrix.platform.name }}.tar.gz
           path: mesa.${{ matrix.platform.name }}.tar.gz
