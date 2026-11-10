@@ -24,20 +24,18 @@ jobs:
           - name: linux-arm64
             arch_image: arm64
             gcc_suffix: manylinux
-            host: arm64-server
+            host: ubuntu-24.04-arm
           - name: muslinux-x86_64
             arch_image: x86_64
             gcc_suffix: muslinux
             host: ubuntu-latest
+          - name: muslinux-arm64
+            arch_image: arm64
+            gcc_suffix: muslinux
+            host: ubuntu-24.04-arm
     steps:
       - name: Check out repository
         uses: actions/checkout@v7
-
-      - name: Set up QEMU
-        if: matrix.platform.name == 'linux-arm64'
-        uses: docker/setup-qemu-action@v4
-        with:
-          platforms: arm64
 
       - name: Build Mesa Libraries with Docker
         run: |
@@ -69,6 +67,9 @@ jobs:
       - uses: ./.github/actions/download
         with:
           platform: muslinux-x86_64
+      - uses: ./.github/actions/download
+        with:
+          platform: muslinux-arm64
       - name: Env to output
         run: |
           echo "package_paths<<EOF" >> $GITHUB_OUTPUT
